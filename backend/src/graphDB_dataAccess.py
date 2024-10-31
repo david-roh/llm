@@ -151,29 +151,18 @@ class graphDBdataAccess:
             logging.info("Vector index does not exist, So KNN graph not update")
 
     def check_account_access(self, database):
-        query = """
-        SHOW USER PRIVILEGES 
-        YIELD * 
-        WHERE graph = $database AND action IN ['read'] 
-        RETURN COUNT(*) AS readAccessCount
-        """
+        """Check if the account has write access to the database"""
         try:
-            logging.info(f"Checking access for database: {database}")
-
-            result = self.graph.query(query, params={"database": database})
-            read_access_count = result[0]["readAccessCount"] if result else 0
-
-            logging.info(f"Read access count: {read_access_count}")
-
-            if read_access_count > 0:
-                logging.info("The account has read access.")
-                return False
-            else:
-                logging.info("The account has write access.")
-                return True
-
+            # Try to create a temporary node to verify write access
+            test_query = """
+            CREATE (n:__TestAccess {test: true})
+            DELETE n
+            """
+            self.graph.query(test_query)
+            logging.info("Write access confirmed")
+            return True
         except Exception as e:
-            logging.error(f"Error checking account access: {e}")
+            logging.error(f"Write access check failed: {str(e)}")
             return False
 
     def check_gds_version(self):
