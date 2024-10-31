@@ -224,6 +224,7 @@ const Chatbot: FC<ChatbotProps> = (props) => {
       );
       setInputMessage('');
       const results = await Promise.allSettled(apiCalls);
+      console.log('Chat API Response:', JSON.stringify(results, null, 2));
       results.forEach((result, index) => {
         const mode = chatModes[index];
         if (result.status === 'fulfilled') {

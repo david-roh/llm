@@ -18,6 +18,7 @@ from src.post_processing import create_vector_fulltext_indexes, create_entity_em
 from sse_starlette.sse import EventSourceResponse
 from src.communities import create_communities
 from src.neighbours import get_neighbour_nodes
+from src.prompt_safety import PromptSafetyChecker
 import json
 from typing import List, Mapping
 from starlette.middleware.sessions import SessionMiddleware
@@ -310,6 +311,34 @@ async def post_processing(uri=Form(), userName=Form(), password=Form(), database
                 
 @app.post("/chat_bot")
 async def chat_bot(uri=Form(),model=Form(None),userName=Form(), password=Form(), database=Form(),question=Form(None), document_names=Form(None),session_id=Form(None),mode=Form(None)):
+    
+    # Initialize the PromptSafetyChecker
+    prompt_safety_checker = PromptSafetyChecker()
+    is_safe, reason = prompt_safety_checker.check_prompt(question)
+    if not is_safe:
+        unsafe_result = {
+            "session_id": session_id,
+            "message": "I apologize, but I cannot process that request as it contains potentially unsafe content.",
+            "info": {
+                "sources": [],
+                "model": model,
+                "nodedetails": {
+                    "chunkdetails": [],
+                    "entitydetails": [],
+                    "communitydetails": []
+                },
+                "total_tokens": 0,
+                "response_time": 0,
+                "mode": mode,
+                "entities": {
+                    "entityids": [],
+                    "relationshipids": []
+                },
+                "reason": reason
+            }
+        }
+        return create_api_response('Success', data=unsafe_result)
+    
     logging.info(f"QA_RAG called at {datetime.now()}")
     qa_rag_start_time = time.time()
     try:
