@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useRef, Suspense, useReducer, useCallback } from 'react';
 import FileTable from './FileTable';
-import { Button, Typography, Flex, StatusIndicator, useMediaQuery } from '@neo4j-ndl/react';
+import { Button, Typography, Flex, StatusIndicator, useMediaQuery, Switch } from '@neo4j-ndl/react';
 import { useCredentials } from '../context/UserCredentials';
 import { useFileContext } from '../context/UsersFiles';
 import { extractAPI } from '../utils/FileAPI';
@@ -816,6 +816,14 @@ const Content: React.FC<ContentProps> = ({
                 ) : (
                   <span className='n-body-small'>No Graph Schema configured</span>
                 )}
+              </div>
+              <div className='flex items-center gap-2 mt-2'>
+                <Switch
+                  checked={isReadOnlyUser}
+                  onChange={() => setIsReadOnlyUser(!isReadOnlyUser)}
+                  label='General User Toggle'
+                  size='small'
+                />
               </div>
             </Typography>
           </div>
