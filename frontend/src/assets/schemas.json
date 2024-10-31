@@ -1,230 +1,333 @@
-[{
-  "labels": [
-    "Answer",
-    "Question",
-    "Tag",
-    "User"
-  ],
-  "relationshipTypes": [
-    "ACCEPTED",
-    "ANSWERED",
-    "POSTED",
-    "SIMILAR",
-    "TAGGED"
-  ],
-  "schema": "stackoverflow"
-},
-{
+[
+  {
     "labels": [
-      "Actor",
-      "Director",
-      "Genre",
-      "Movie",
-      "Person",
-      "User"
+      "Customer",
+      "ServiceAgreement",
+      "ScopeOfWork",
+      "BillingTerms",
+      "RenewalTerms",
+      "TerminationClause",
+      "PenaltyClause",
+      "EscalationProcedure",
+      "ComplianceRequirement",
+      "SecurityClause",
+      "DataPrivacy",
+      "RiskAssessment",
+      "AuditLog",
+      "ChangeOrder",
+      "ProjectPlan",
+      "Deliverable",
+      "Milestone",
+      "ApprovalStatus"
     ],
     "relationshipTypes": [
-      "ACTED_IN",
-      "DIRECTED",
-      "IN_GENRE",
-      "RATED"
+      "INCLUDES",
+      "MANDATES",
+      "BILLS",
+      "RENEWS",
+      "TERMINATES",
+      "ESCALATES",
+      "ASSESSES_RISK",
+      "AUDITED_BY",
+      "TRACKS",
+      "DELIVERS",
+      "COMPLIES_WITH",
+      "APPROVED_BY"
     ],
-    "schema": "movies"
+    "schema": "core_agreements"
   },
   {
     "labels": [
-      "Application",
+      "CloudMigrationPlan",
+      "ITInfrastructure",
+      "ServerConfiguration",
+      "NetworkTopology",
+      "StoragePolicy",
       "DataCenter",
-      "Egress",
-      "Interface",
-      "Machine",
-      "Network",
-      "OS",
-      "Port",
-      "Process",
-      "Rack",
-      "Router",
-      "Service",
-      "Software",
-      "Switch",
-      "Type",
-      "Version",
-      "Zone"
+      "SecurityProtocol",
+      "BackupSchedule",
+      "DisasterRecovery",
+      "IncidentResponse",
+      "MaintenancePlan",
+      "PerformanceMetric",
+      "AccessControl",
+      "FirewallRules",
+      "EncryptionPolicy",
+      "SoftwareLicense",
+      "HardwareAsset"
     ],
     "relationshipTypes": [
-      "CONNECTS",
-      "CONTAINS",
-      "DEPENDS_ON",
-      "EXPOSES",
-      "HOLDS",
-      "INSTANCE",
-      "LISTENS",
-      "PREVIOUS",
-      "ROUTES",
-      "RUNS",
-      "TYPE",
-      "VERSION"
+      "DEPLOYS",
+      "PROTECTS",
+      "CONFIGURES",
+      "BACKS_UP",
+      "RESPONDS_TO",
+      "MAINTAINS",
+      "MEASURES",
+      "CONTROLS_ACCESS",
+      "FIREWALLS",
+      "ENCRYPTS",
+      "LICENSES",
+      "TRACKS_ASSET"
     ],
-    "schema": "network"
-  }, 
+    "schema": "it_infrastructure"
+  },
   {
     "labels": [
-      "Category",
-      "Customer",
-      "Order",
-      "Product",
-      "Supplier"
+      "DisasterRecoveryPlan",
+      "BusinessContinuityPlan",
+      "ComplianceDocument",
+      "RegulatoryRequirement",
+      "IncidentLog",
+      "ThreatAssessment",
+      "ResponseProcedure",
+      "RecoveryTimeObjective",
+      "RecoveryPointObjective",
+      "RiskMitigation",
+      "ContingencyPlan",
+      "CriticalAsset",
+      "DowntimeImpact",
+      "ResilienceScore",
+      "ServiceRestoration"
+    ],
+    "relationshipTypes": [
+      "COMPLIES_WITH",
+      "ASSESSES_THREAT",
+      "DOCUMENTS_INCIDENT",
+      "DEFINES_OBJECTIVE",
+      "MITIGATES",
+      "PLANS_CONTINGENCY",
+      "IDENTIFIES_ASSET",
+      "MEASURES_IMPACT",
+      "RESTORES_SERVICE"
+    ],
+    "schema": "disaster_recovery"
+  },
+  {
+    "labels": [
+      "ComplianceAudit",
+      "AuditReport",
+      "RiskAssessment",
+      "ControlMeasure",
+      "ComplianceRequirement",
+      "VulnerabilityReport",
+      "AccessLog",
+      "EncryptionProtocol",
+      "DataRetentionPolicy",
+      "AuditTrail",
+      "InternalControl",
+      "PolicyDocument",
+      "TrainingRecord",
+      "IncidentReport",
+      "ComplianceScore"
+    ],
+    "relationshipTypes": [
+      "ASSESSES_RISK",
+      "DOCUMENTS_CONTROL",
+      "ENFORCES_POLICY",
+      "RETENTION_POLICY",
+      "AUDITS",
+      "LOGS_ACCESS",
+      "REPORTS_INCIDENT",
+      "SCORES_COMPLIANCE",
+      "TRAILS_AUDIT"
+    ],
+    "schema": "compliance_management"
+  },
+  {
+    "labels": [
+      "CustomerData",
+      "OrderDetails",
+      "ProductCatalog",
+      "PurchaseOrder",
+      "Invoice",
+      "PaymentTerms",
+      "ReturnPolicy",
+      "ShippingInfo",
+      "SalesAgreement",
+      "CustomerFeedback",
+      "LoyaltyProgram",
+      "DiscountCode",
+      "SubscriptionPlan",
+      "AccountBalance",
+      "TransactionHistory"
     ],
     "relationshipTypes": [
       "ORDERS",
-      "PART_OF",
-      "PURCHASED",
-      "SUPPLIES"
+      "INVOICES",
+      "PAYS",
+      "RETURNS",
+      "SHIPS",
+      "AGREES_TO",
+      "FEEDBACK_PROVIDED",
+      "LOYALTY_MEMBER",
+      "DISCOUNTS",
+      "SUBSCRIBES_TO",
+      "BALANCES",
+      "TRACKS_TRANSACTION"
     ],
-    "schema": "retail"
-  },{
-    "labels": [
-      "Tag",
-      "Link",
-      "Post",
-      "User"
-    ],
-    "relationshipTypes": [
-      "CONTAINS",
-      "FOLLOWS",
-      "MENTIONS",
-      "POSTS",
-      "REPLY_TO",
-      "REPOST",
-      "TAGS"
-    ],
-    "schema": "social"
+    "schema": "customer_service"
   },
   {
     "labels": [
-      "Business",
-      "Category",
-      "City",
-      "Label",
-      "Photo",
-      "Review",
-      "User"
-    ],
-    "relationshipTypes": [
-      "FRIENDS",
-      "HAS_LABEL",
-      "HAS_PHOTO",
-      "IN_CATEGORY",
-      "IN_CITY",
-      "REVIEWS",
-      "SIMILAR",
-      "WROTE",
-      "WROTE_TIP"
-    ],
-    "schema": "reviews"
-  },
-  {
-    "labels": [
-      "Bank",
-      "CashIn",
-      "CashOut",
+      "ITServiceTicket",
+      "IssueDescription",
+      "ResolutionStep",
+      "ServiceLevel",
+      "ResponseTime",
+      "EscalationPath",
+      "Agent",
       "Client",
-      "Debit",
-      "Email",
-      "Merchant",
-      "Payment",
-      "Phone",
-      "SSN",
-      "Transaction",
-      "Transfer"
+      "TicketStatus",
+      "SatisfactionScore",
+      "CaseHistory",
+      "ProblemCategory",
+      "TroubleshootingStep",
+      "ResolutionTime",
+      "RootCause"
     ],
     "relationshipTypes": [
-      "HAS_EMAIL",
-      "HAS_PHONE",
-      "HAS_SSN",
-      "NEXT",
-      "PERFORMED",
-      "SENT_TO",
-      "RECEIVED_FROM"
+      "REPORTS_ISSUE",
+      "RESOLVES",
+      "ESCALATES",
+      "ASSIGNED_TO",
+      "CLOSES_TICKET",
+      "CATEGORIZES",
+      "TROUBLESHOOTS",
+      "DOCUMENTS_HISTORY",
+      "IDENTIFIES_ROOT_CAUSE"
     ],
-    "schema": "payments"
+    "schema": "it_service_management"
   },
   {
     "labels": [
-      "Area",
-      "Crime",
-      "Email",
+      "Asset",
       "Location",
-      "Object",
-      "Officer",
-      "Person",
-      "Phone",
-      "PhoneCall",
-      "PostCode",
-      "Vehicle"
+      "MaintenanceRecord",
+      "MaintenanceSchedule",
+      "OperationalStatus",
+      "RepairHistory",
+      "DowntimeLog",
+      "InspectionReport",
+      "WarrantyStatus",
+      "Supplier",
+      "AssetType",
+      "DepreciationValue",
+      "ReplacementSchedule",
+      "LifecycleStage",
+      "UtilizationRate"
     ],
     "relationshipTypes": [
-      "CALLED",
-      "CALLER",
-      "CURRENT_ADDRESS",
-      "FAMILY_REL",
-      "HAS_EMAIL",
-      "HAS_PHONE",
-      "HAS_POSTCODE",
-      "INVESTIGATED_BY",
-      "INVOLVED_IN",
-      "KNOWS",
-      "KNOWS_LW",
-      "KNOWS_PHONE",
-      "KNOWS_SN",
-      "LOCATION_IN_AREA",
-      "OCCURRED_AT",
-      "PARTY_TO",
-      "POSTCODE_IN_AREA"
+      "LOCATED_AT",
+      "MAINTAINED_BY",
+      "OPERATES",
+      "REPAIRS",
+      "INSPECTS",
+      "UNDER_WARRANTY",
+      "SUPPLIED_BY",
+      "CATEGORIZED_AS",
+      "DEPRECIATES",
+      "REPLACES",
+      "TRACKS_LIFECYCLE",
+      "UTILIZES"
     ],
-    "schema": "crime"
+    "schema": "asset_management"
   },
   {
     "labels": [
-      "Airport",
-      "City",
-      "Continent",
-      "Country",
-      "Region"
+      "HealthRecord",
+      "Patient",
+      "Doctor",
+      "Medication",
+      "Prescription",
+      "Diagnosis",
+      "TreatmentPlan",
+      "SurgicalHistory",
+      "InsurancePolicy",
+      "MedicalReport",
+      "LabResult",
+      "VaccinationRecord",
+      "Appointment",
+      "BillingRecord",
+      "Caregiver"
     ],
     "relationshipTypes": [
-      "HAS_ROUTE",
-      "IN_CITY",
-      "IN_COUNTRY",
-      "IN_REGION",
-      "ON_CONTINENT"
+      "HAS_RECORD",
+      "PRESCRIBES",
+      "DIAGNOSES",
+      "TREATS",
+      "SURGICAL_HISTORY",
+      "COVERS_POLICY",
+      "REPORTS",
+      "RESULTS",
+      "VACCINATES",
+      "BILLS",
+      "CARED_BY"
     ],
-    "schema": "flights"
+    "schema": "healthcare_management"
   },
   {
     "labels": [
-      "AgeGroup",
-      "Case",
-      "Drug",
-      "Manufacturer",
-      "Outcome",
-      "Reaction",
-      "ReportSource",
-      "Therapy"
+      "NetworkDiagram",
+      "Router",
+      "Switch",
+      "Firewall",
+      "AccessPoint",
+      "Subnet",
+      "IPRange",
+      "VLAN",
+      "SecurityPolicy",
+      "BandwidthAllocation",
+      "LatencyThreshold",
+      "ConnectionLog",
+      "VPN",
+      "TrafficMonitor",
+      "LoadBalancer"
     ],
     "relationshipTypes": [
-      "FALLS_UNDER",
-      "HAS_REACTION",
-      "IS_CONCOMITANT",
-      "IS_INTERACTING",
-      "IS_PRIMARY_SUSPECT",
-      "IS_SECONDARY_SUSPECT",
-      "PRESCRIBED",
-      "RECEIVED",
-      "REGISTERED",
-      "REPORTED_BY",
-      "RESULTED_IN"
+      "CONNECTS_TO",
+      "SECURES",
+      "ALLOCATES_BANDWIDTH",
+      "MONITORS_TRAFFIC",
+      "LOGS_CONNECTION",
+      "BALANCES_LOAD",
+      "SUBNETS",
+      "VLAN_TAGS"
     ],
-    "schema": "healthcare"
+    "schema": "network_infrastructure"
+  },
+  {
+    "labels": [
+      "Project",
+      "Phase",
+      "Task",
+      "Subtask",
+      "Dependency",
+      "ResourceAllocation",
+      "ProjectManager",
+      "Timeline",
+      "Budget",
+      "RiskFactor",
+      "Stakeholder",
+      "Milestone",
+      "CompletionDate",
+      "QualityControl",
+      "Outcome"
+    ],
+    "relationshipTypes": [
+      "HAS_PHASE",
+      "CONTAINS_TASK",
+      "DEPENDENT_ON",
+      "ALLOCATES_RESOURCE",
+      "MANAGED_BY",
+      "TRACKS_TIMELINE",
+      "BUDGETS",
+      "ASSESSES_RISK",
+      "INVOLVES",
+      "MEETS_MILESTONE",
+      "COMPLETES",
+      "CONTROLS_QUALITY"
+    ],
+    "schema": "project_management"
   }
 ]
