@@ -822,7 +822,6 @@ const Content: React.FC<ContentProps> = ({
                   checked={isReadOnlyUser}
                   onChange={() => setIsReadOnlyUser(!isReadOnlyUser)}
                   label='General User Toggle'
-                  size='small'
                 />
               </div>
             </Typography>

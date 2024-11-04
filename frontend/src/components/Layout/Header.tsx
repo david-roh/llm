@@ -75,15 +75,16 @@ function Header() {
                   clean
                   placement="left"
                   label={tooltips.documentation}
-                  className={`
+                >
+                  <div className={`
                     rounded-full p-2
                     transition-all duration-200
                     hover:bg-opacity-10 hover:scale-105
                     active:scale-95
                     ${colorMode === 'dark' ? 'hover:bg-white' : 'hover:bg-gray-900'}
-                  `}
-                >
-                  <InformationCircleIconOutline className="w-5 h-5" />
+                  `}>
+                    <InformationCircleIconOutline className="w-5 h-5" />
+                  </div>
                 </IconButtonWithToolTip>
 
                 {/* GitHub Button */}
@@ -93,15 +94,16 @@ function Header() {
                   text={tooltips.github}
                   size="large"
                   clean
-                  className={`
+                >
+                  <div className={`
                     rounded-full p-2
                     transition-all duration-200
                     hover:bg-opacity-10 hover:scale-105
                     active:scale-95
                     ${colorMode === 'dark' ? 'hover:bg-white' : 'hover:bg-gray-900'}
-                  `}
-                >
-                  <CodeBracketSquareIconOutline className="w-5 h-5" />
+                  `}>
+                    <CodeBracketSquareIconOutline className="w-5 h-5" />
+                  </div>
                 </IconButtonWithToolTip>
 
                 {/* Theme Toggle Button */}
@@ -112,23 +114,24 @@ function Header() {
                   size="large"
                   onClick={toggleColorMode}
                   placement="left"
-                  className={`
+                >
+                  <div className={`
                     rounded-full p-2
                     transition-all duration-200
                     hover:bg-opacity-10 hover:scale-105
                     active:scale-95
                     ${colorMode === 'dark' ? 'hover:bg-white' : 'hover:bg-gray-900'}
-                  `}
-                >
-                  {colorMode === 'dark' ? (
-                    <span role="img" aria-label="sun" className="animate-fade-in">
-                      <SunIconOutline className="w-5 h-5" />
-                    </span>
-                  ) : (
-                    <span role="img" aria-label="moon" className="animate-fade-in">
-                      <MoonIconOutline className="w-5 h-5" />
-                    </span>
-                  )}
+                  `}>
+                    {colorMode === 'dark' ? (
+                      <span role="img" aria-label="sun" className="animate-fade-in">
+                        <SunIconOutline className="w-5 h-5" />
+                      </span>
+                    ) : (
+                      <span role="img" aria-label="moon" className="animate-fade-in">
+                        <MoonIconOutline className="w-5 h-5" />
+                      </span>
+                    )}
+                  </div>
                 </IconButtonWithToolTip>
               </div>
             </div>
