@@ -2,7 +2,7 @@
   {
     "labels": [
       "Customer",
-      "ServiceAgreement",
+      "ServiceAgreement", 
       "ScopeOfWork",
       "BillingTerms",
       "RenewalTerms",
@@ -24,7 +24,7 @@
       "INCLUDES",
       "MANDATES",
       "BILLS",
-      "RENEWS",
+      "RENEWS", 
       "TERMINATES",
       "ESCALATES",
       "ASSESSES_RISK",
@@ -329,5 +329,46 @@
       "CONTROLS_QUALITY"
     ],
     "schema": "project_management"
+  },
+  {
+    "labels": [
+      "ErrorCode",
+      "ErrorDescription",
+      "FaultSymptom",
+      "RecommendedAction",
+      "RobotComponent",
+      "SafetySignal",
+      "TroubleshootingStep",
+      "MaintenanceTool",
+      "ManualReference",
+      "DiagnosticFile",
+      "EventLog",
+      "SystemStatus",
+      "ConnectionStatus",
+      "ComponentStatus",
+      "OperatingMode",
+      "SystemSoftware",
+      "RobotType",
+      "IndicatorLED",
+      "PowerSupplyStatus"
+    ],
+    "relationshipTypes": [
+      "CAUSES",
+      "RESOLVES",
+      "REQUIRES",
+      "APPLIES_TO",
+      "DESCRIBES",
+      "OBSERVES",
+      "PREVENTS",
+      "USES_TOOL",
+      "CREATES",
+      "GENERATES",
+      "INDICATES",
+      "CONNECTED_TO",
+      "CHECKS",
+      "VERIFIES",
+      "SETS_MODE"
+    ],
+    "schema": "abb_robotics_troubleshooting"
   }
 ]
