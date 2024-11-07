@@ -133,7 +133,7 @@ class graphDBdataAccess:
         
     def update_KNN_graph(self):
         """
-        Update the graph node with SIMILAR relationship where embedding scrore match
+        Update the graph node with SIMILAR relationship where embedding scores match
         """
         index = self.graph.query("""show indexes yield * where type = 'VECTOR' and name = 'vector'""")
         # logging.info(f'show index vector: {index}')
@@ -161,7 +161,7 @@ class graphDBdataAccess:
             self.graph.query(test_query)
             logging.info("Write access confirmed")
             return True
-            # return False
+
         except Exception as e:
             logging.error(f"Write access check failed: {str(e)}")
             return False
@@ -343,60 +343,51 @@ class graphDBdataAccess:
     def get_duplicate_nodes_list(self):
         score_value = float(os.environ.get('DUPLICATE_SCORE_VALUE'))
         text_distance = int(os.environ.get('DUPLICATE_TEXT_DISTANCE'))
-        
         query_duplicate_nodes = """
-            MATCH (n) 
-            WHERE n.id IS NOT NULL
-            WITH n
-            WITH collect(n) AS nodes
-            UNWIND nodes AS n
-            WITH n, [other IN nodes
-                WHERE elementId(n) < elementId(other)
-                AND labels(n) = labels(other)  // Only compare nodes with the same label
-                AND (
-                    (
-                        // Stricter text similarity check based only on edit distance
-                        size(toString(n.id)) > 5 AND
-                        apoc.text.distance(toLower(n.id), toLower(other.id)) <= $duplicate_text_distance
-                    )
-                    OR
-                    (
-                        // Cosine similarity check for nodes with embeddings, also with a stricter threshold
-                        n.embedding IS NOT NULL AND other.embedding IS NOT NULL AND
-                        size(n.embedding) = size(other.embedding) AND
-                        vector.similarity.cosine(other.embedding, n.embedding) >= $duplicate_score_value
-                    )
-                )
-            ] AS similar
-            WHERE size(similar) > 0
-            WITH DISTINCT collect([n] + similar) AS all
-            CALL (all) {{
-                WITH all
-                UNWIND all AS nodes
-                WITH nodes, all
-                WHERE NONE(other IN all WHERE other <> nodes AND size(other) > size(nodes) AND size(apoc.coll.subtract(nodes, other)) = 0)
-                RETURN head(nodes) AS n, tail(nodes) AS similar
-            }}
-            OPTIONAL MATCH (doc:Document)<-[:PART_OF]-(c:Chunk)-[:HAS_ENTITY]->(n)
-            {return_statement}
-        """
-        
+                MATCH (n:!Chunk&!Session&!Document&!`__Community__`) with n 
+                WHERE n.embedding is not null and n.id is not null // and size(toString(n.id)) > 3
+                WITH n ORDER BY count {{ (n)--() }} DESC, size(toString(n.id)) DESC // updated
+                WITH collect(n) as nodes
+                UNWIND nodes as n
+                WITH n, [other in nodes 
+                // only one pair, same labels e.g. Person with Person
+                WHERE elementId(n) < elementId(other) and labels(n) = labels(other)
+                // at least embedding similarity of X
+                AND 
+                (
+                // either contains each other as substrings or has a text edit distinct of less than 3
+                (size(toString(other.id)) > 2 AND toLower(n.id) CONTAINS toLower(other.id)) OR 
+                (size(toString(n.id)) > 2 AND toLower(other.id) CONTAINS toLower(n.id))
+                OR (size(toString(n.id))>5 AND apoc.text.distance(toLower(n.id), toLower(other.id)) < $duplicate_text_distance)
+                OR
+                vector.similarity.cosine(other.embedding, n.embedding) > $duplicate_score_value
+                )] as similar
+                WHERE size(similar) > 0 
+                // remove duplicate subsets
+                with collect([n]+similar) as all
+                CALL {{ with all
+                    unwind all as nodes
+                    with nodes, all
+                    // skip current entry if it's smaller and a subset of any other entry
+                    where none(other in all where other <> nodes and size(other) > size(nodes) and size(apoc.coll.subtract(nodes, other))=0)
+                    return head(nodes) as n, tail(nodes) as similar
+                }}
+                OPTIONAL MATCH (doc:Document)<-[:PART_OF]-(c:Chunk)-[:HAS_ENTITY]->(n)
+                {return_statement}
+                """
         return_query_duplicate_nodes = """
-            RETURN n {id: n.id, description: n.description, embedding: NULL, elementId: elementId(n), labels: labels(n)} AS e, 
-            [s IN similar | s {id: s.id, description: s.description, labels: labels(s), elementId: elementId(s)}] AS similar,
-            collect(DISTINCT doc.fileName) AS documents, count(DISTINCT c) AS chunkConnections
-            ORDER BY e.id ASC
-            LIMIT 100
-        """
+                RETURN n {.*, embedding:null, elementId:elementId(n), labels:labels(n)} as e, 
+                [s in similar | s {.id, .description, labels:labels(s), elementId: elementId(s)}] as similar,
+                collect(distinct doc.fileName) as documents, count(distinct c) as chunkConnections
+                ORDER BY e.id ASC
+                LIMIT 100
+                """
+        total_duplicate_nodes = "RETURN COUNT(DISTINCT(n)) as total"
         
-        total_duplicate_nodes = "RETURN COUNT(DISTINCT(n)) AS total"
-        param = {"duplicate_score_value": score_value, "duplicate_text_distance": text_distance}
+        param = {"duplicate_score_value": score_value, "duplicate_text_distance" : text_distance}
         
-        # Execute the query for duplicate nodes
-        nodes_list = self.execute_query(query_duplicate_nodes.format(return_statement=return_query_duplicate_nodes), param=param)
-        # Execute the query for the total count of duplicate nodes
-        total_nodes = self.execute_query(query_duplicate_nodes.format(return_statement=total_duplicate_nodes), param=param)
-        
+        nodes_list = self.execute_query(query_duplicate_nodes.format(return_statement=return_query_duplicate_nodes),param=param)
+        total_nodes = self.execute_query(query_duplicate_nodes.format(return_statement=total_duplicate_nodes),param=param)
         return nodes_list, total_nodes[0]
     
     def merge_duplicate_nodes(self,duplicate_nodes_list):
