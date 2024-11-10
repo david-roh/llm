@@ -28,6 +28,9 @@ for key in os.environ:
     if key.startswith(groq_key_prefix):
         GROQ_KEYS.append(os.environ[key])
 
+logging.info(f"Found {len(GROQ_KEYS)} Groq API keys in environment")
+print(f"Initialized Groq key rotator with {len(GROQ_KEYS)} keys")
+
 groq_key_rotator = ApiKeyRotator(GROQ_KEYS)
 
 def get_llm(model: str):
@@ -89,7 +92,9 @@ def get_llm(model: str):
         model_name, base_url = env_value.split(",")
         api_key = groq_key_rotator.get_next_key()
         if not api_key:
+            logging.error("No Groq API keys configured")
             raise ValueError("No Groq API keys configured")
+        logging.info(f"Creating Groq LLM instance with model: {model_name}")
         llm = ChatGroq(api_key=api_key, model_name=model_name, temperature=0)
 
     elif "bedrock" in model:
