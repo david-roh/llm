@@ -17,7 +17,18 @@ from langchain_community.chat_models import ChatOllama
 import boto3
 import google.auth
 from src.shared.constants import MODEL_VERSIONS, PROMPT_TO_ALL_LLMs
+from src.utils.key_rotator import ApiKeyRotator
 
+# Initialize rotators at module level
+GROQ_KEYS = []
+groq_key_prefix = "GROQ_API_KEY"
+
+# Collect all Groq API keys from environment variables
+for key in os.environ:
+    if key.startswith(groq_key_prefix):
+        GROQ_KEYS.append(os.environ[key])
+
+groq_key_rotator = ApiKeyRotator(GROQ_KEYS)
 
 def get_llm(model: str):
     """Retrieve the specified language model based on the model name."""
@@ -75,7 +86,10 @@ def get_llm(model: str):
         llm = ChatFireworks(api_key=api_key, model=model_name)
 
     elif "groq" in model:
-        model_name, base_url, api_key = env_value.split(",")
+        model_name, base_url = env_value.split(",")
+        api_key = groq_key_rotator.get_next_key()
+        if not api_key:
+            raise ValueError("No Groq API keys configured")
         llm = ChatGroq(api_key=api_key, model_name=model_name, temperature=0)
 
     elif "bedrock" in model:
