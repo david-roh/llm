@@ -370,5 +370,81 @@
       "SETS_MODE"
     ],
     "schema": "abb_robotics_troubleshooting"
+  },
+  {
+    "labels": [
+      "CompanyInfo",
+      "ReportPeriod",
+      "FinancialStatements",
+      "IncomeStatement",
+      "BalanceSheet",
+      "CashFlowStatement",
+      "ShareholderEquityStatement",
+      "Notes",
+      "Risks",
+      "ManagementDiscussion",
+      "LegalProceedings",
+      "StockInformation",
+      "Dividends",
+      "Exhibits",
+      "AuditorReport"
+    ],
+    "relationshipTypes": [
+      "REPORTS_FOR",
+      "COVERS_PERIOD",
+      "CONTAINS",
+      "HAS_ITEM",
+      "INCLUDES_SECTION",
+      "DIVIDEND_DECLARED",
+      "EXHIBITS_ATTACHES",
+      "ISSUED_BY",
+      "DESCRIBES_RISK"
+    ],
+    "schema": "financial_reports"
+  },
+  {
+    "labels": [
+      "ErrorCode",
+      "ErrorDescription",
+      "TroubleshootingStep",
+      "FaultSymptom",
+      "Component",
+      "SafetySignal",
+      "SafetyStandard",
+      "EventLog",
+      "MaintenanceAction",
+      "MaintenanceTool",
+      "DocumentationReference",
+      "SystemStatus",
+      "OperatingMode",
+      "ConfigurationFile",
+      "CircuitBreaker",
+      "PowerSupply",
+      "Transformer",
+      "LEDIndicator",
+      "ControlUnit",
+      "DiagnosticFile"
+    ],
+    "relationshipTypes": [
+      "CAUSES",
+      "REQUIRES",
+      "INCLUDES",
+      "GENERATES",
+      "REPORTS",
+      "CONNECTS_TO",
+      "MEASURES",
+      "CHECKS",
+      "TRACKS",
+      "APPLIES_TO",
+      "REFERENCES",
+      "OBSERVES",
+      "RESOLVES",
+      "CONFIGURES",
+      "SUPPORTS",
+      "PROTECTS",
+      "DEFINES",
+      "INDICATES"
+    ],
+    "schema": "abb_robotics_troubleshooting"
   }
 ]
