@@ -10,15 +10,15 @@ Creating knowledge graphs from unstructured data
 ![React](https://img.shields.io/badge/React-blue)
 
 ## Overview
-This application is designed to turn Unstructured data (pdfs,docs,txt,youtube video,web pages,etc.) into a knowledge graph stored in Neo4j. It utilizes the power of Large language models (OpenAI,Gemini,etc.) to extract nodes, relationships and their properties from the text and create a structured knowledge graph using Langchain framework. 
+This application is designed to turn Unstructured data (pdfs,docs,txt) into a knowledge graph stored in Neo4j. It utilizes the power of Large language models (OpenAI,Gemini,etc.) to extract nodes, relationships and their properties from the text and create a structured knowledge graph using Langchain framework. 
 
-Upload your files from local machine, GCS or S3 bucket or from web sources, choose your LLM model and generate knowledge graph.
+Upload your files from local machine, choose your LLM model and generate knowledge graph.
 
 ## Key Features
 - **Knowledge Graph Creation**: Transform unstructured data into structured knowledge graphs using LLMs.
 - **Providing Schema**: Provide your own custom schema or use existing schema in settings to generate graph.
 - **View Graph**: View graph for a particular source or multiple sources at a time in Bloom.
-- **Chat with Data**: Interact with your data in a Neo4j database through conversational queries, also retrive metadata about the source of response to your queries. 
+- **Chat with Data**: Interact with your data in a Neo4j database through conversational queries, also retrive metadata about the source of response to your queries.
 
 ## Getting started
 
@@ -60,21 +60,6 @@ You can then run Docker Compose to build and start all components:
 docker-compose up --build
 ```
 
-#### Additional configs
-
-By default, the input sources will be: Local files, Youtube, Wikipedia ,AWS S3 and Webpages. As this default config is applied:
-```env
-VITE_REACT_APP_SOURCES="local,youtube,wiki,s3,web"
-```
-
-If however you want the Google GCS integration, add `gcs` and your Google client ID:
-```env
-VITE_REACT_APP_SOURCES="local,youtube,wiki,s3,gcs,web"
-VITE_GOOGLE_CLIENT_ID="xxxx"
-```
-
-You can of course combine all (local, youtube, wikipedia, s3 and gcs) or remove any you don't want/need.
-
 ### Chat Modes
 
 By default,all of the chat modes will be available: vector, graph_vector, graph, fulltext, graph_vector_fulltext , entity_vector and global_vector.
@@ -112,22 +97,6 @@ Alternatively, you can run the backend and frontend separately:
     pip install -r requirements.txt
     uvicorn score:app --reload
     ```
-### Deploy in Cloud
-To deploy the app and packages on Google Cloud Platform, run the following command on google cloud run:
-```bash
-# Frontend deploy 
-gcloud run deploy 
-source location current directory > Frontend
-region : 32 [us-central 1]
-Allow unauthenticated request : Yes
-```
-```bash
-# Backend deploy 
-gcloud run deploy --set-env-vars "OPENAI_API_KEY = " --set-env-vars "DIFFBOT_API_KEY = " --set-env-vars "NEO4J_URI = " --set-env-vars "NEO4J_PASSWORD = " --set-env-vars "NEO4J_USERNAME = "
-source location current directory > Backend
-region : 32 [us-central 1]
-Allow unauthenticated request : Yes
-```
 
 ## ENV
 | Env Variable Name       | Mandatory/Optional | Default Value | Description                                                                                      |
@@ -148,7 +117,7 @@ Allow unauthenticated request : Yes
 | LANGCHAIN_ENDPOINT      | Optional           | https://api.smith.langchain.com | Endpoint for Langchain API                                                            |
 | VITE_BACKEND_API_URL         | Optional           | http://localhost:8000 | URL for backend API                                                                       |
 | VITE_BLOOM_URL               | Optional           | https://workspace-preview.neo4j.io/workspace/explore?connectURL={CONNECT_URL}&search=Show+me+a+graph&featureGenAISuggestions=true&featureGenAISuggestionsInternal=true | URL for Bloom visualization |
-| VITE_REACT_APP_SOURCES       | Mandatory          | local,youtube,wiki,s3 | List of input sources that will be available                                               |
+| VITE_REACT_APP_SOURCES       | Mandatory          | local | List of input sources that will be available                                               |
 | VITE_CHAT_MODES              | Mandatory          | vector,graph+vector,graph,hybrid | Chat modes available for Q&A
 | VITE_ENV                     | Mandatory          | DEV or PROD           | Environment variable for the app                                                                 |
 | VITE_TIME_PER_PAGE          | Optional           | 50             | Time per page for processing                                                                    |
