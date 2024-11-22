@@ -17,7 +17,14 @@ from langchain_community.chat_models import ChatOllama
 import boto3
 import google.auth
 from src.shared.constants import MODEL_VERSIONS, PROMPT_TO_ALL_LLMs
+from datetime import datetime
+import time
+from collections import deque
+from langchain_core.callbacks.base import BaseCallbackHandler
 
+request_times = deque(maxlen=100)  # Store timestamps of recent requests
+token_times = deque(maxlen=100)  # Store token counts with timestamps
+token_counts = {'input': 0, 'output': 0}
 
 def get_llm(model: str):
     """Retrieve the specified language model based on the model name."""
@@ -35,6 +42,7 @@ def get_llm(model: str):
             credentials=credentials,
             project=project_id,
             temperature=0,
+            callbacks=[TokenCallbackHandler()],  # Add callback
             safety_settings={
                 HarmCategory.HARM_CATEGORY_UNSPECIFIED: HarmBlockThreshold.BLOCK_NONE,
                 HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
@@ -50,6 +58,7 @@ def get_llm(model: str):
             api_key=api_key,
             model=model_name,
             temperature=0,
+            callbacks=[TokenCallbackHandler()],  # Add callback
         )
 
     elif "azure" in model:
@@ -62,21 +71,22 @@ def get_llm(model: str):
             temperature=0,
             max_tokens=None,
             timeout=None,
+            callbacks=[TokenCallbackHandler()],  # Add callback
         )
 
     elif "anthropic" in model:
         model_name, api_key = env_value.split(",")
         llm = ChatAnthropic(
-            api_key=api_key, model=model_name, temperature=0, timeout=None
+            api_key=api_key, model=model_name, temperature=0, timeout=None, callbacks=[TokenCallbackHandler()]  # Add callback
         )
 
     elif "fireworks" in model:
         model_name, api_key = env_value.split(",")
-        llm = ChatFireworks(api_key=api_key, model=model_name)
+        llm = ChatFireworks(api_key=api_key, model=model_name, callbacks=[TokenCallbackHandler()])  # Add callback
 
     elif "groq" in model:
         model_name, base_url, api_key = env_value.split(",")
-        llm = ChatGroq(api_key=api_key, model_name=model_name, temperature=0)
+        llm = ChatGroq(api_key=api_key, model_name=model_name, temperature=0, max_retries=20, callbacks=[TokenCallbackHandler()])  # Add callback
 
     elif "bedrock" in model:
         model_name, aws_access_key, aws_secret_key, region_name = env_value.split(",")
@@ -88,12 +98,14 @@ def get_llm(model: str):
         )
 
         llm = ChatBedrock(
-            client=bedrock_client, model_id=model_name, model_kwargs=dict(temperature=0)
+            client=bedrock_client, model_id=model_name, model_kwargs=dict(temperature=0), callbacks=[TokenCallbackHandler()]  # Add callback
         )
 
-    elif "ollama" in model:
+    elif "ollama_llama3" in model:
+        print("ollama model!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print(env_value)
         model_name, base_url = env_value.split(",")
-        llm = ChatOllama(base_url=base_url, model=model_name)
+        llm = ChatOllama(base_url=base_url, model=model_name, callbacks=[TokenCallbackHandler()])  # Add callback
 
     elif "diffbot" in model:
         #model_name = "diffbot"
@@ -101,6 +113,7 @@ def get_llm(model: str):
         llm = DiffbotGraphTransformer(
             diffbot_api_key=api_key,
             extract_types=["entities", "facts"],
+            callbacks=[TokenCallbackHandler()],  # Add callback
         )
     
     else: 
@@ -110,6 +123,7 @@ def get_llm(model: str):
             base_url=api_endpoint,
             model=model_name,
             temperature=0,
+            callbacks=[TokenCallbackHandler()],  # Add callback
         )
             
     logging.info(f"Model created - Model Version: {model}")
@@ -206,3 +220,42 @@ async def get_graph_from_llm(model, chunkId_chunkDoc_list, allowedNodes, allowed
         llm, combined_chunk_document_list, allowedNodes, allowedRelationship
     )
     return graph_document_list
+
+class TokenCallbackHandler(BaseCallbackHandler):
+    """Callback handler for tracking token usage and request rates."""
+    
+    def __init__(self):
+        super().__init__()
+        
+    def on_llm_start(self, *args, **kwargs):
+        request_times.append(time.time())
+        
+    def on_llm_end(self, response, *args, **kwargs):
+        current_time = time.time()
+        
+        if hasattr(response, 'usage'):
+            input_tokens = response.usage.prompt_tokens
+            output_tokens = response.usage.completion_tokens
+            
+            token_counts['input'] += input_tokens
+            token_counts['output'] += output_tokens
+            
+            # Store tokens with timestamp
+            token_times.append({
+                'time': current_time,
+                'tokens': input_tokens + output_tokens
+            })
+            
+            # Calculate metrics
+            if len(request_times) > 1:
+                time_window = current_time - request_times[0]
+                rpm = len(request_times) / (time_window / 60)
+                
+                # Calculate tokens per minute
+                recent_tokens = sum(t['tokens'] for t in token_times)
+                token_time_window = current_time - token_times[0]['time']
+                tpm = recent_tokens / (token_time_window / 60)
+                
+                logging.info(f"Requests per minute: {rpm:.2f}")
+                logging.info(f"Tokens per minute: {tpm:.2f}")
+                logging.info(f"Total tokens used - Input: {token_counts['input']}, Output: {token_counts['output']}")

@@ -459,6 +459,8 @@ const Content: React.FC<ContentProps> = ({
    * @param queueFiles - Whether to prioritize processing files from the queue. Defaults to false.
    */
   const handleGenerateGraph = (filesTobeProcessed: CustomFile[], queueFiles: boolean = false) => {
+    const startTime = performance.now();
+    
     let data = [];
     const processingFilesCount = filesData.filter((f) => f.status === 'Processing').length;
     if (filesTobeProcessed.length && !queueFiles && processingFilesCount < batchSize) {
@@ -485,15 +487,24 @@ const Content: React.FC<ContentProps> = ({
         data = triggerBatchProcessing(filesTobeSchedule, filesTobeProcessed, true, true);
       }
       Promise.allSettled(data).then((_) => {
+        const endTime = performance.now();
+        const duration = endTime - startTime;
+        console.log(`Graph generation completed in ${duration.toFixed(2)}ms`);
         setextractLoading(false);
       });
     } else if (queueFiles && !queue.isEmpty() && processingFilesCount < batchSize) {
       data = scheduleBatchWiseProcess(queue.items, true);
       Promise.allSettled(data).then((_) => {
+        const endTime = performance.now();
+        const duration = endTime - startTime;
+        console.log(`Queue processing completed in ${duration.toFixed(2)}ms`);
         setextractLoading(false);
       });
     } else {
       addFilesToQueue(filesTobeProcessed as CustomFile[]);
+      const endTime = performance.now();
+      const duration = endTime - startTime;
+      console.log(`Files queued in ${duration.toFixed(2)}ms`);
     }
   };
 

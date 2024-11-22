@@ -134,16 +134,24 @@ const Chatbot: FC<ChatbotProps> = (props) => {
   const simulateTypingEffect = (messageId: number, response: ResponseMode, mode: string, message: string) => {
     let index = 0;
     let lastTimestamp: number | null = null;
-    const TYPING_INTERVAL = 20;
+    // Increase typing speed by:
+    // 1. Reducing the interval between updates
+    const TYPING_INTERVAL = 4; // Reduced from 20
+    // 2. Increasing characters per update
+    const CHARS_PER_UPDATE = 10; // Add multiple characters per frame
+
     const animate = (timestamp: number) => {
       if (lastTimestamp === null) {
         lastTimestamp = timestamp;
       }
       const elapsed = timestamp - lastTimestamp;
+      
       if (elapsed >= TYPING_INTERVAL) {
         if (index < message.length) {
-          const nextIndex = index + 1;
+          // Update multiple characters at once
+          const nextIndex = Math.min(index + CHARS_PER_UPDATE, message.length);
           const currentTypedText = message.substring(0, nextIndex);
+          
           setListMessages((msgs) =>
             msgs.map((msg) => {
               if (msg.id === messageId) {
@@ -164,6 +172,7 @@ const Chatbot: FC<ChatbotProps> = (props) => {
               return msg;
             })
           );
+          
           index = nextIndex;
           lastTimestamp = timestamp;
         } else {
